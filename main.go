@@ -9,7 +9,7 @@ type User struct{
 	 Name string `json:"name"`
 	 Age uint16 `json:"age"` }
 func main() {
-	fmt.Println("Starting DB test...")
+
 
 	dsn := "root:@tcp(127.0.0.1:3306)/golang?parseTime=true&charset=utf8mb4&loc=Local"
 	db, err := sql.Open("mysql", dsn)
@@ -26,11 +26,23 @@ func main() {
 
 	fmt.Println("Connected to MySQL!")
 
-	// Test INSERT
-	_, err = db.Exec("INSERT INTO users(name, age) VALUES(?, ?)", "Es", 23)
+	// // Test INSERT
+	// _, err = db.Exec("INSERT INTO users(name, age) VALUES(?, ?)", "Es", 23)
+	// if err != nil {
+	// 	panic(fmt.Sprintf("Insert failed: %s", err))
+	// }
+
+	res, err:=db.Query("SELECT `name`,	`age` from `users`")
 	if err != nil {
-		panic(fmt.Sprintf("Insert failed: %s", err))
+		panic(fmt.Sprintf("Cannect : %s", err))
+	}
+	for res.Next(){
+		var user User
+		err= res.Scan(&user.Name,&user.Age)
+			if err != nil {
+		panic(fmt.Sprintf("Cannect : %s", err))
+	}
+	fmt.Println(fmt.Sprintf("User: %s with age %d",user.Name, user.Age))
 	}
 
-	fmt.Println("Data inserted successfully!")
 }
